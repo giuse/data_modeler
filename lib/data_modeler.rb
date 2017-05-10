@@ -1,5 +1,3 @@
 require "data_modeler/version"
-
-module DataModeler
-  # Your code goes here...
-end
+require "data_modeler/exceptions"
+require "data_modeler/dataset"
