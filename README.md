@@ -1,4 +1,9 @@
-# DataModeler
+
+# [Data Modeler](https://github.com/giuse/data_modeler)
+
+[![Gem Version](https://badge.fury.io/rb/data_modeler.svg)](https://badge.fury.io/rb/data_modeler)
+[![Build Status](https://travis-ci.org/giuse/data_modeler.svg?branch=master)](https://travis-ci.org/giuse/data_modeler)
+[![Code Climate](https://codeclimate.com/github/giuse/data_modeler/badges/gpa.svg)](https://codeclimate.com/github/giuse/data_modeler)
 
 Using machine learning, create generative models based on your data alone. Applications span from imputation to prediction.
 
