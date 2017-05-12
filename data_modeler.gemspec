@@ -22,10 +22,10 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Debug
-  spec.add_development_dependency 'pry', '~> 0'
-  spec.add_development_dependency 'pry-nav', '~> 0'
-  spec.add_development_dependency 'pry-stack_explorer', '~> 0'
-  spec.add_development_dependency 'pry-rescue', '~> 0'
+  spec.add_development_dependency 'pry', '~> 0.10'
+  spec.add_development_dependency 'pry-nav', '~> 0.2'
+  spec.add_development_dependency 'pry-stack_explorer', '~> 0.4'
+  spec.add_development_dependency 'pry-rescue', '~> 1.4'
 
   # Test
   spec.add_development_dependency 'bundler', '~> 1.14'

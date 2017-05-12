@@ -1,3 +1,5 @@
 require "data_modeler/version"
 require "data_modeler/exceptions"
+require "data_modeler/dataset_helper"
 require "data_modeler/dataset"
+require "data_modeler/dataset_gen"

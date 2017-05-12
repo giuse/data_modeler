@@ -1,45 +1,83 @@
 
-describe DataModeler::Dataset do
+include DataModeler
+
+describe Dataset do
   context 'when initialized with a timeseries hash' do
-    let(:data) do
-      { time: [1,2,3,4,5], s1: [11,22,33,44,55], s2: [111,222,333,444,555] }
-    end
-    let(:args) do
-      { inputs: [:s1], targets: [:s2], first_idx: 2, last_idx: 4,
-        ntimes: 2, tspread: 1, look_ahead: 0 }
-    end
-    subject(:ds) { DataModeler::Dataset.new data, **args }
+    # Definition in `spec_helper.rb`
+    # { time: [1,2,..,9], s1: [10,11,..,18], .., s4: [40,41,..,48] }
+    # data.size = 5 (=nseries+1), data.first.size = 9
+    let(:data) { DatasetSpecHelper::DATA }
 
-    describe '#inputs' do
-      it { expect(ds.inputs).to eq [22,33] }
-    end
-
-    describe '#targets' do
-      it { expect(ds.targets).to eq [333] }
-    end
-
-    describe '#next' do
-      it 'increases the internal index' do
-        expect { ds.next }.to change { ds.target_idx }.by(1)
+    context 'when building a simple static model' do
+      let(:args) do
+        { inputs: [:s1], targets: [:s2], first_idx: 2, end_idx: 4,
+          ntimes: 1, tspread: 0, look_ahead: 0 }
       end
-      it 'raises StopIteration when reaching last_idx' do
-        expect { 3.times { ds.next } }.to raise_error(StopIteration)
+      # NOTE: Datasets indices use with left inclusion and right exclusions,
+      #       i.e. targets are considered in the range `[first_idx,end_idx)`
+      subject(:ds) { Dataset.new data, **args }
+
+      describe '#inputs' do
+        it { expect(ds.inputs).to eq [12] }
       end
-      it 'returns sequential data' do
-        expect(ds.next).to eq [[22,33],[333]]
-        expect(ds.next).to eq [[33,44],[444]]
+
+      describe '#targets' do
+        it { expect(ds.targets).to eq [22] }
+      end
+
+      describe '#next' do
+        it 'increases the internal index' do
+          expect { ds.next }.to change { ds.target_idx }.by(1)
+        end
+        it 'raises StopIteration when reaching end_idx' do
+          expect { 3.times { ds.next } }.to raise_error(StopIteration)
+        end
+        it 'returns sequential data' do
+          expect(ds.next).to eq [[12],[22]]
+          expect(ds.next).to eq [[13],[23]]
+        end
+      end
+
+      describe '#to_a' do
+        let(:right) { [[[12],[22]],[[13],[23]]] }
+        let(:wrong) { [[[12],[22]],[[13],[23]],[[14],[24]]] }
+        subject { ds.to_a }
+        it 'stops at end_idx' do
+          is_expected.not_to eq wrong
+          is_expected.to eq right
+        end
       end
     end
 
-    describe '#to_a' do
-      let(:right) { [[[22,33],[333]],[[33,44],[444]]] }
-      let(:wrong) { [[[22,33],[333]],[[33,44],[444]],[[44,55],[555]]] }
-      subject { ds.to_a }
-      it 'stops at last_idx' do
-        is_expected.not_to eq wrong
-        is_expected.to eq right
+    context 'when building a more complex model with longer dependancy and look-ahead' do
+      # Starting from index 6 as target
+      # 1: trg = i6(t7), in1 = i3(t4), in2 = i5(t6)
+      # 2: trg = i7(t8), in1 = i4(t5), in2 = i6(t7)
+      # first => idx trg(1) = 6
+      # end => idx trg(2) + 1 = 8
+      let(:args) do
+        { inputs: [:s1,:s2], targets: [:s3,:s4], first_idx: 6, end_idx: 8,
+          ntimes: 2, tspread: 2, look_ahead: 1 }
       end
-    end
+      let(:right) do
+        [ # list of 2 entries, for trg(1) idx=6 and trg(2) idx=7
+          [ # first entry for trg(1) idx = 6
+            [ # inputs from s1 idx3, s2 idx3, s1 idx5, s2 idx5,
+              13, 23, 15, 25
+            ],
+            [ # targets from s3 idx6, s4 idx 6
+              36, 46
+            ]
+          ],
+          [[14, 24, 16, 26],[37, 47]] # second entry for trg(2) idx = 7
+        ]
+      end
+      subject(:ds) { Dataset.new data, **args }
 
+      describe '#to_a' do
+        it { expect(ds.to_a).to eq right }
+      end
+
+    end
   end
 end
