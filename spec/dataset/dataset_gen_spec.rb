@@ -21,7 +21,7 @@ describe DatasetGen do
       # NOTE: Datasets indices use with left inclusion and right exclusions,
       #       i.e. targets are considered in the range `[first_idx,end_idx)`
       subject(:gen) do
-        DatasetGen.new data, ds_args: ds_args, train_size: 2, test_size: 3
+        described_class.new data, ds_args: ds_args, train_size: 2, test_size: 3
       end
       # Each train set consumes 2 indices, each test set 3
       # Hence, the `Dataset`s for the second run are expected to be:
@@ -125,7 +125,7 @@ describe DatasetGen do
         ]
       end
       subject(:gen) do
-        DatasetGen.new data, ds_args: ds_args, **sizes
+        described_class.new data, ds_args: ds_args, **sizes
       end
 
 

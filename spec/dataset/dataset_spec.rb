@@ -15,7 +15,7 @@ describe Dataset do
       end
       # NOTE: Datasets indices use with left inclusion and right exclusions,
       #       i.e. targets are considered in the range `[first_idx,end_idx)`
-      subject(:ds) { Dataset.new data, **args }
+      subject(:ds) { described_class.new data, **args }
 
       describe '#inputs' do
         it { expect(ds.inputs).to eq [12] }
@@ -72,7 +72,7 @@ describe Dataset do
           [[14, 24, 16, 26],[37, 47]] # second entry for trg(2) idx = 7
         ]
       end
-      subject(:ds) { Dataset.new data, **args }
+      subject(:ds) { described_class.new data, **args }
 
       describe '#to_a' do
         it { expect(ds.to_a).to eq right }
