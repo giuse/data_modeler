@@ -21,6 +21,10 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  # Models
+  # TODO: learn to keep them independent from the gem (plug-ins)
+  spec.add_dependency 'ruby-fann', '~>1.2.6'
+
   # Debug
   spec.add_development_dependency 'pry', '~> 0.10'
   spec.add_development_dependency 'pry-nav', '~> 0.2'
@@ -30,5 +34,6 @@ Gem::Specification.new do |spec|
   # Test
   spec.add_development_dependency 'bundler', '~> 1.14'
   spec.add_development_dependency 'rake', '~> 10.0'
-  spec.add_development_dependency 'rspec', '~> 3.0'
+  spec.add_development_dependency 'rspec', '~> 3.6'
+  spec.add_development_dependency 'rspec-retry', '~> 0.5.4'
 end

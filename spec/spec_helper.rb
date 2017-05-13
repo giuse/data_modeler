@@ -1,13 +1,21 @@
 require "bundler/setup"
+require "rspec/retry"
 require "data_modeler"
+
+# Shared examples
+Dir["./spec/shared_examples_for_*.rb"].sort.each { |f| require f }
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
 
+  # Enforce new expectation syntax
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  # Show rspec-retry status in spec process
+  config.verbose_retry = true
 end
 
 # Keep at hand basic (small) data shared between tests
@@ -30,4 +38,17 @@ module DatasetSpecHelper
     headers, *values = table
     headers.zip(values.transpose).to_h
   end
+end
+
+# Helper functions
+
+# Silence chatty functions in test (or at least try to...)
+def silenced stream=STDOUT
+  abort "Pass what you would like to run as a block" unless block_given?
+  old = stream.dup
+  stream.reopen File::NULL
+  yield
+ensure
+  stream.sync = true
+  stream.reopen(old)
 end
