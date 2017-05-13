@@ -32,7 +32,7 @@ shared_examples DataModeler::Model do |ngens|
 
     # just make sure it's working, no need for precision here
     it 'consistently models XOR', retry: 5 do
-      silenced { model.reset.train ngens, tset }
+      silenced { model.train ngens, tset }
       predictions = model.test tset[:input]
       observations = tset[:target]
       residuals = predictions.zip(observations).map { |(pr),(ob)| (pr-ob).abs }

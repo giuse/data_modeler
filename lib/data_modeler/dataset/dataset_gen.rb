@@ -98,6 +98,7 @@ class DataModeler::DatasetGen
 
   # Check if there is enough data to build `min_nruns` train + test sets
   # @raise [NotEnoughDataError] if `not enough minerals` (cit.)
+  # @return [void]
   # @note remember the schema: need to check for `|win|train1|t1|t2|...|tn|`
   def validate_enough_data_for min_nruns
     min_data_size = min_eligible_trg + train_size + min_nruns * test_size

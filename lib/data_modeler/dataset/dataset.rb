@@ -82,9 +82,11 @@ class DataModeler::Dataset
   include DataModeler::IteratingBasedOnNext # `#each` and `#to_a` based on `#next`
 
   # Overloaded comparison for easier testing
+  # @param other [Dataset] what needs comparing to
+  # @return [void]
   def == other
-    self.class == other.class &&
-      data.object_id == other.data.object_id &&
+    self.class == other.class && # terminate check here if wrong class
+      data.object_id == other.data.object_id && # both `data` point to same object
       (instance_variables - [:@data]).all? do |var|
         self.instance_variable_get(var) == other.instance_variable_get(var)
       end
@@ -94,6 +96,8 @@ class DataModeler::Dataset
 
   include DataModeler::ConvertingTimeAndIndices # `#time` and `#idx`
 
+  # Initializes input indices vector
+  # @return [Array<input_idx>]
   def init_inputs
     if target_idx < end_idx
       # build list of incremental time buffers
