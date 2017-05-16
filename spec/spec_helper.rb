@@ -18,12 +18,14 @@ RSpec.configure do |config|
   config.verbose_retry = true
 end
 
-# Keep at hand basic (small) data shared between tests
-module DatasetSpecHelper
+# Keep around some basic, small data (shared between tests).
+# It is built to simplify mock construction of the complex Dataset output.
+# It also shows a straightforward way to get the hash from a table (CSV?) format
+module WithDataTable
   DATA = begin
     table = [
       # Keep time and indices different to spot for bugs
-      # TODO: unregular time
+      # TODO: irregular time
       [:time, :s1, :s2, :s3, :s4 ], # data indices (rows):
       [    1,  10,  20,  30,  40 ], # 0
       [    2,  11,  21,  31,  41 ], # 1
@@ -38,17 +40,4 @@ module DatasetSpecHelper
     headers, *values = table
     headers.zip(values.transpose).to_h
   end
-end
-
-# Helper functions
-
-# Silence chatty functions in test (or at least try to...)
-def silenced stream=STDOUT
-  abort "Pass what you would like to run as a block" unless block_given?
-  old = stream.dup
-  stream.reopen File::NULL
-  yield
-ensure
-  stream.sync = true
-  stream.reopen(old)
 end

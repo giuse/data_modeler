@@ -1,4 +1,4 @@
-module DataModeler
+class DataModeler::Dataset
   # Converts between time and indices for referencing data lines
   module ConvertingTimeAndIndices
     # Returns the time for a given index
@@ -30,10 +30,22 @@ module DataModeler
     # Yields on each [inputs, targets] pair.
     # @return [nil, Iterator] `block_given? ? nil : Iterator`
     def each
+      reset_iteration
       return enum_for(:each) unless block_given?
       loop { yield self.next }
       nil
     end
+
+    # Yields on each [inputs, targets] pair, collecting the input.
+    # @return [Array, Iterator] `block_given? ? nil : Iterator`
+    def map
+      reset_iteration
+      return enum_for(:collect) unless block_given?
+      [].tap { |ret| loop { ret << yield(self.next) } }
+    end
+
+    # @see #collect
+    alias_method :collect, :map
 
     # @return [Array]
     def to_a

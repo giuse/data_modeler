@@ -6,8 +6,8 @@
 class DataModeler::Dataset
 
   attr_reader :data, :input_series, :target_series, :first_idx, :end_idx,
-              :ntimes, :tspread, :look_ahead, :target_idx, :input_idxs,
-              :nrows
+              :ntimes, :tspread, :look_ahead, :first_idx, :target_idx,
+              :input_idxs, :nrows
 
   # @param data [Hash-like] the data, in an object that can be
   #     accessed by keys and return a time series per each key.
@@ -26,8 +26,7 @@ class DataModeler::Dataset
   #     the target -- i.e., how far ahead the model is trained to predict
   # @note we expect Datasets indices to be used with left inclusion but
   #     right exclusion, i.e. targets are considered in the range `[from,to)`
-  def initialize data, inputs:, targets:, first_idx:, end_idx:,
-      ntimes:, tspread:, look_ahead:
+  def initialize data, inputs:, targets:, first_idx:, end_idx:, ntimes:, tspread:, look_ahead:
     @data = data
     @input_series = inputs
     @target_series = targets
@@ -37,8 +36,8 @@ class DataModeler::Dataset
     @nrows = data[:time].size
     @tspread = tspread
     @look_ahead = look_ahead
-    @target_idx = first_idx
-    @input_idxs = init_inputs
+    @first_idx = first_idx
+    reset_iteration
   end
 
   # TODO: make sure constructor requirements are unnecessary for static models
@@ -63,8 +62,11 @@ class DataModeler::Dataset
     end
   end
 
+  ### ITERATION
+
   # Returns the next pair [inputs, targets]
   # @return [Array]
+  # @raise [StopIteration] when the target index is past the dataset limits
   def peek
     raise StopIteration if target_idx >= end_idx
     [inputs, targets]
@@ -79,7 +81,16 @@ class DataModeler::Dataset
     end
   end
 
-  include DataModeler::IteratingBasedOnNext # `#each` and `#to_a` based on `#next`
+  # `#each` and `#to_a` based on `#next`
+  include DataModeler::Dataset::IteratingBasedOnNext
+
+  ### COMPATIBILITY
+
+  # Compatibility with Hash, which returns a list of series' data arrays
+  # @return [Array<Array>>] list of values per each serie
+  def values
+    to_a.transpose
+  end
 
   # Overloaded comparison for easier testing
   # @param other [Dataset] what needs comparing to
@@ -94,7 +105,15 @@ class DataModeler::Dataset
 
   private
 
-  include DataModeler::ConvertingTimeAndIndices # `#time` and `#idx`
+  # Resets the indices at the start position -- used for iterations
+  # @return [void]
+  def reset_iteration
+    @target_idx = first_idx
+    @input_idxs = init_inputs
+  end
+
+  # `#time` and `#idx` for time/index conversion
+  include DataModeler::Dataset::ConvertingTimeAndIndices
 
   # Initializes input indices vector
   # @return [Array<input_idx>]

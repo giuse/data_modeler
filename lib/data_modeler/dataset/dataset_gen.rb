@@ -28,11 +28,13 @@ class DataModeler::DatasetGen
     @first_idx = first_idx
     @train_size = train_size
     @test_size = test_size
-    @local_nrun = 1 # used to iterate over nruns with #next
+    reset_iteration
 
     @nrows = data[:time].size
     validate_enough_data_for min_nruns
   end
+
+  ### DATA ACCESS
 
   # Builds training set for the training
   # @param nrun [Integer] will build different train+test for each run
@@ -56,13 +58,15 @@ class DataModeler::DatasetGen
     DataModeler::Dataset.new data, ds_args.merge(first_idx: first, end_idx: last)
   end
 
+  ### ITERATION
+
+  # TODO: @local_nrun is an ugly name, refactor it!
+
   # Returns the next pair [trainset, testset]
   # @return [Array<Dataset, Dataset>]
   def peek
     [self.train(@local_nrun), self.test(@local_nrun)]
   end
-
-  # TODO: @local_nrun is an ugly hack, refactor it!
 
   # Returns the next pair [trainset, testset] and increments the counter
   # @return [Array<Dataset, Dataset>]
@@ -70,27 +74,37 @@ class DataModeler::DatasetGen
     peek.tap { @local_nrun += 1 }
   end
 
-  include DataModeler::IteratingBasedOnNext # `#each` and `#to_a` based on `#next`
+  # `#each` and `#to_a` based on `#next`
+  include DataModeler::Dataset::IteratingBasedOnNext
 
   # I want `#to_a` to return an array of arrays rather than an array of dataset
 
+  # Returns an array of datasets
   # @return [Array<Array[Dataset]>]
   alias_method :to_ds_a, :to_a
+  # Returns an array of arrays (list of inputs-targets pairs)
   # @return [Array<Array<Array<...>>]
   def to_a
-    to_ds_a.collect do |run|
-      run.collect &:to_a
+    to_ds_a.collect do |train_test_for_run|
+      train_test_for_run.collect &:to_a
     end
   end
 
   private
 
-  include DataModeler::ConvertingTimeAndIndices # `#time` and `#idx`
+  # Resets the index at the start position -- used for iterations
+  # @return [void]
+  def reset_iteration
+    @local_nrun = 1
+  end
+
+  # `#time` and `#idx` for time/index conversion
+  include DataModeler::Dataset::ConvertingTimeAndIndices
 
   # Find the index of the first element in the data eligible as target for training
   # @return [Integer] the index of the first eligible target
   def min_eligible_trg
-    @min_eligible_trg ||= idx(time(0) +
+    @min_eligible_trg ||= idx( time(0) +
       # minimum time span required as input for the first target
       ds_args[:look_ahead] + (ds_args[:ntimes]-1) * ds_args[:tspread]
     )

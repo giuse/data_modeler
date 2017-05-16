@@ -25,14 +25,16 @@ shared_examples DataModeler::Model do |ngens|
 
     it 'presents the correct interface' do
       is_expected.to respond_to(:reset).with(0).arguments
-      is_expected.to respond_to(:train).with(2).arguments # ngens, trainset
-      is_expected.to respond_to(:test).with(1).argument   # inputs
-      is_expected.to respond_to(:save).with(1).argument   # filename
+      is_expected.to respond_to(:train).
+        with(1..2).arguments.  # trainset, ngens
+        and_keywords(:report_interval, :desired_error)
+      is_expected.to respond_to(:test).with(1).argument       # inputs
+      is_expected.to respond_to(:save).with(1).argument       # filename
     end
 
     # just make sure it's working, no need for precision here
     it 'consistently models XOR', retry: 5 do
-      silenced { model.train ngens, tset }
+      model.train tset, report_interval: 0
       predictions = model.test tset[:input]
       observations = tset[:target]
       residuals = predictions.zip(observations).map { |(pr),(ob)| (pr-ob).abs }

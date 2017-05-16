@@ -6,7 +6,7 @@ describe DatasetGen do
     # Definition in `spec_helper.rb`
     # { time: [1,2,..,9], s1: [10,11,..,18], .., s4: [40,41,..,48] }
     # data.size = 5 (=nseries+1), data.first.size = 9
-    let(:data) { DatasetSpecHelper::DATA }
+    let(:data) { WithDataTable::DATA }
 
     context 'when building a simple static model' do
       let(:ds_args) do
