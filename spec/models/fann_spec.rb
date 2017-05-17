@@ -15,4 +15,12 @@ describe DataModeler::Models::FANN do
   subject(:model) { described_class.new **opts }
   # You get 5 tries to solve XOR in the number of generations you pass
   it_behaves_like DataModeler::Models
+
+  describe '#train' do
+    context 'with `:rwg` as algorithm' do
+      let(:rwg_opts) { opts.merge({algo: :rwg}) }
+      subject(:model) { described_class.new **rwg_opts }
+      it_behaves_like DataModeler::Models
+    end
+  end
 end

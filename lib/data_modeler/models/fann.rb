@@ -28,7 +28,9 @@ class DataModeler::Models::FANN
   # @return [void]
   def reset
     @fann = RubyFann::Standard.new fann_opts
-    fann.set_training_algorithm(algo) if algo
+    if algo && algo != :rwg
+      fann.set_training_algorithm(algo)
+    end
     if actfn
       fann.set_activation_function_hidden(actfn)
       fann.set_activation_function_output(actfn)
@@ -41,6 +43,11 @@ class DataModeler::Models::FANN
   # @param ngens [Integer] number of training generations
   # @return [void]
   def train trainset, ngens=@ngens, report_interval: 1000, desired_error: 1e-10
+    # special case: not implemented in FANN
+    if algo == :rwg
+      return train_rwg(trainset, ngens,
+        report_interval: report_interval, desired_error: desired_error)
+    end
     # TODO: optimize maybe?
     inputs, targets = trainset.values
     tset = RubyFann::TrainData.new inputs: inputs, desired_outputs: targets
@@ -48,6 +55,37 @@ class DataModeler::Models::FANN
 
     # params: train_data, max_epochs, report_interval, desired_error
     fann.train_on_data(tset, ngens, report_interval, desired_error)
+  end
+
+  # Trains the model for ngens on the trainset using Random Weight Guessing
+  # @param trainset [Hash-like<input: Array, target: Array>] training set
+  # @param ngens [Integer] number of training generations
+  # @return [void]
+  def train_rwg trainset, ngens=@ngens, report_interval: 1000, desired_error: 1e-10
+    # TODO: use report_interval and desired_error
+    # generate new random network
+    reset
+    # test it on inputs
+    inputs, targets = trainset.values
+    outputs = test(inputs)
+    # calculate RMSE
+    rmse_fn = -> (outs) do
+      sq_err = outs.zip(targets).flat_map do |os,ts|
+        os.zip(ts).collect { |o,t| (t-o)**2 }
+      end
+      Math.sqrt(sq_err.reduce(:+) / sq_err.size)
+    end
+    rmse = rmse_fn.call(outputs)
+    # initialize best
+    best = [fann,rmse]
+    # rinse and repeat
+    ngens.times do
+      outputs = test(inputs)
+      rmse = rmse_fn.call(outputs)
+      (best = [fann,rmse]; puts rmse) if rmse < best.last
+    end
+    # expose the best to the interface
+    fann = best.first
   end
 
   # Tests the model on inputs.
