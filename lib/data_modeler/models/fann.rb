@@ -1,7 +1,7 @@
 require 'ruby-fann'
 
 # Model class based on Fast Artificial Neural Networks (FANN)
-class DataModeler::Model::FANN
+class DataModeler::Models::FANN
 
   attr_reader :fann_opts, :ngens, :fann, :algo, :actfn
 

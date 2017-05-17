@@ -1,16 +1,13 @@
-# Helpers
-require "data_modeler/version"
-require "data_modeler/exceptions"
-require "data_modeler/helpers"
+require "data_modeler/support"
 
 # Dataset
-require "data_modeler/dataset/dataset_helper"
+require "data_modeler/dataset/helper"
 require "data_modeler/dataset/dataset"
 require "data_modeler/dataset/dataset_gen"
 
 # Models
-require "data_modeler/model"
-require "data_modeler/model/fann"
+require "data_modeler/models/selector"
+require "data_modeler/models/fann"
 
-# Modeler
+# Framework core
 require "data_modeler/base"

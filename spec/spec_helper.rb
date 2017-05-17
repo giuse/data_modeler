@@ -3,7 +3,7 @@ require "rspec/retry"
 require "data_modeler"
 
 # Shared examples
-Dir["./spec/shared_examples_for_*.rb"].sort.each { |f| require f }
+Dir["./spec/**/shared_examples*.rb"].sort.each { |f| require f }
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

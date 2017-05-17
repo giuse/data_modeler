@@ -11,7 +11,7 @@
 
 # Shared examples for models
 # See `spec/model/fann_spec.rb` for my original example
-shared_examples DataModeler::Model do |ngens|
+shared_examples DataModeler::Models do |ngens|
   # context 'with correct initialization' do
     let(:data) do
       # XOR problem dataset

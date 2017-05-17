@@ -24,7 +24,7 @@ class DataModeler::Base
     @out_dir = prepare_output config[:results]
 
     @tset_gen = DataModeler::DatasetGen.new data, **opts_for(:datasetgen)
-    @model = DataModeler::Model.from_conf **opts_for(:learner)
+    @model = DataModeler::Models.selector **opts_for(:learner)
   end
 
   # Main control: up to `nruns` (or until end of data) loop train-test-save
@@ -54,6 +54,11 @@ class DataModeler::Base
   #    (false if nil/uninitialized)
   def save_models?
     @save_models || false
+  end
+
+  # @return [String]
+  def to_s
+    config.to_s
   end
 
   private
