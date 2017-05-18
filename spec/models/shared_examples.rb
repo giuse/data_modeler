@@ -1,39 +1,39 @@
 
 
-### VERY IMPORTANT: `model` needs to be initialized with 2 inputs and 1 output
+### VERY IMPORTANT: your `Model` needs to be initialized with 2 inputs and 1 output
 
-# To validate your model works within the framework,
-# initialize one in the subject (named :model) like this:
-# `subject(:model) { described_class.new your_options }`
-# then test for:
-# `it_behaves_like Dataset::Model ngens`
-
+# See an example usage (to copy!) in `spec/fann_spec.rb`
 
 # Shared examples for models
-# See `spec/model/fann_spec.rb` for my original example
 shared_examples DataModeler::Models do |ngens|
   context 'with correct initialization' do
+    # linearly correlated real data
     let(:data) do
-      # XOR problem dataset
-      [ [[0,0],[1]],
-        [[0,1],[0]],
-        [[1,0],[0]],
-        [[1,1],[1]] ]
+      [ [[1.0,0.905],[0.951]],
+        [[0.974,0.943],[0.952]],
+        [[0.937,0.971],[0.968]],
+        [[0.927,0.958],[0.985]],
+        [[0.944,0.915],[1.0]],
+        [[0.932,0.919],[0.996]],
+        [[0.927,0.938],[0.937]],
+        [[0.944,0.957],[0.967]],
+        [[0.965,0.98],[0.966]]
+      ]
     end
-    # one for both train&test (no need for precision here)
+    # one for both train&test (not testing model generalization here)
     let(:tset) { [:input, :target].zip(data.transpose).to_h }
 
     it 'presents the correct interface' do
       is_expected.to respond_to(:reset).with(0).arguments
-      is_expected.to respond_to(:train).
-        with(1..2).arguments.  # trainset, ngens
-        and_keywords(:report_interval, :desired_error)
-      is_expected.to respond_to(:test).with(1).argument       # inputs
-      is_expected.to respond_to(:save).with(1).argument       # filename
+      is_expected.to respond_to(:train)
+        .with(1..2).arguments                              # trainset, ngens
+        .and_keywords(:report_interval, :desired_error)    # plus keys
+      is_expected.to respond_to(:test).with(1).argument    # inputs
+      is_expected.to respond_to(:save).with(1).argument    # filename
     end
 
     # just make sure it's working, no need for precision here
-    it 'consistently models XOR', retry: 5 do
+    it 'consistently models the data', retry: 5 do
       model.train tset, report_interval: 0
       predictions = model.test tset[:input]
       observations = tset[:target]

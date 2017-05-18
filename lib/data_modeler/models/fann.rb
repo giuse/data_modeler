@@ -4,7 +4,7 @@ require 'ruby-fann'
 # Fast Artificial Neural Networks (FANN) implementation
 class DataModeler::Models::FANN
 
-  attr_reader :fann_opts, :ngens, :fann, :algo, :actfn
+  attr_reader :fann_opts, :ngens, :fann, :algo, :actfn, :init_weights_range
 
   # @param ngens [Integer] number of generations (repetitions) alloted for training
   # @param hidden_layers [Array<Integer>] list of number of hidden neurons
@@ -13,7 +13,8 @@ class DataModeler::Models::FANN
   # @param noutputs [Integer] number of outputs in the network
   # @param algo [:rprop, :rwg, ...] training algorithm
   # @param actfn [:sigmoid, ...] activation function
-  def initialize ngens:, hidden_layers:, ninputs:, noutputs:, algo: nil, actfn: nil
+  # @param init_weights_range [Array<min_w, max_w>] minimum and maximum value for weight initialization range
+  def initialize ngens:, hidden_layers:, ninputs:, noutputs:, algo: nil, actfn: nil, init_weights_range: nil
     @fann_opts = {
       num_inputs: ninputs,
       hidden_neurons: hidden_layers,
@@ -22,6 +23,7 @@ class DataModeler::Models::FANN
     @ngens = ngens
     @algo = algo
     @actfn = actfn
+    @init_weights_range = init_weights_range
     reset
   end
 
@@ -36,7 +38,9 @@ class DataModeler::Models::FANN
       fann.set_activation_function_hidden(actfn)
       fann.set_activation_function_output(actfn)
     end
-    nil
+    if init_weights_range
+      fann.randomize_weights(*init_weights_range.map(&method(:Float)))
+    end
   end
 
   # Trains the model for ngens on the trainset
@@ -64,8 +68,10 @@ class DataModeler::Models::FANN
   # @return [void]
   def train_rwg trainset, ngens=@ngens, report_interval: 1000, desired_error: 1e-10
     # TODO: use report_interval and desired_error
-    # generate new random network
-    reset
+    # initialize weight with random values in an interval [min_weight, max_weight]
+    # NOTE: if the RWG training is unsuccessful, this range is the first place to
+    # check to improve performance
+    fann.randomize_weights(*init_weights_range.map(&method(:Float)))
     # test it on inputs
     inputs, targets = trainset.values
     outputs = test(inputs)
