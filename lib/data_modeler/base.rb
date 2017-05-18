@@ -49,7 +49,7 @@ class DataModeler::Base
   end
 
   # Attribute reader for instance variable `@save_models`, ending in '?' since
-  #    it's a boolean value.
+  # it's a boolean value.
   # @return [true|false] value of instance variable @save_models
   #    (false if nil/uninitialized)
   def save_models?
@@ -102,13 +102,13 @@ class DataModeler::Base
     when :dataset
       { inputs: inputs,
         targets:  targets,
-        ntimes: config[:tset][:ntimes],
+        ninput_points: config[:tset][:ninput_points],
         tspread: config[:tset][:tspread],
         look_ahead: config[:tset][:look_ahead]
       }
     when :learner
       config[:learner].merge({
-        ninputs: (config[:tset][:ntimes] * inputs.size),
+        ninputs: (config[:tset][:ninput_points] * inputs.size),
         noutputs: targets.size
       })
     else abort "Unrecognized `who`: '#{who}'"

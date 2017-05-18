@@ -1,27 +1,32 @@
 
 # Build train and test datasets for each run of the training.
 #
-# This diagram should help understanding how it works
-# (win is the input+look_ahead window for first training target)
-#   ----------------------------------------> data (time)
-#   |win|train1|t1|       -> train starts after window, test after training
-#          |train2|t2|    -> train starts after window + 1 tset
-#             |train3|t3| -> train starts after window + 2 tset
+# Train and test sets are seen as moving windows on the data.
+# Alignment is designed to provide continuous testing results over (most of) the data.
+# The following diagram exemplifies this: the training sets `t1`, `t2` and `t3` are
+# aligned such that their results can be plotted countinuously against the obserevations.
+# (b) is the amount of data covering for the input+look_ahead window uset for the first
+# target.
+#   data:  ---------------------->  (time, datapoints)
+#   run1:  (b)|train1|t1|       ->  train starts after (b), test after training
+#   run2:        |train2|t2|    ->  train starts after (b) + 1 tset
+#   run3:           |train3|t3| ->  train starts after (b) + 2 tset
 # Note how the test sets line up. This allows the testing results plots
-# to be continuous, no model is tested on data on which *itself* has been
-# trained, and all data is used multiple times
+# to be continuous, while no model is tested on data on which _itself_ has been trained.
+# All data is used multiple times, alternately both as train and test sets.
 class DataModeler::DatasetGen
 
   attr_reader :data, :ds_args, :first_idx, :train_size, :test_size, :nrows
 
-  # @param data [Hash-like] the data, in an object that can be
+  # @param data [Hash] the data, in an object that can be
   #     accessed by keys and return a time series per each key.
-  #     It is required to include and be sorted by a series named `time`,
+  #     It is required to include (and be sorted by) a series named `:time`,
   #     and for all series to have equal length.
-  # @param ds_args [Hash] parameters for the Datasets: inputs, targets,
-  #     first_idx, end_idx, ntimes. Check class Dataset for details.
-  # @train_size: how many points to predict for each training set
-  # @test_size: how many points to predict for each test set
+  # @param ds_args [Hash] parameters hash for `Dataset`s initialization.
+  #     Keys: `%i[inputs, targets, first_idx, end_idx, ninput_points]`.
+  #     See `Dataset#initialize` for details.
+  # @param train_size [Integer] how many points to expose as targets in each training set
+  # @param test_size [Integer] how many points to expose as targets in each test set
   def initialize data, ds_args:, train_size:, test_size:, min_nruns: 1
     @data = data
     @ds_args = ds_args
@@ -36,22 +41,24 @@ class DataModeler::DatasetGen
 
   ### DATA ACCESS
 
-  # Builds training set for the training
-  # @param nrun [Integer] will build different train+test for each run
+  # Builds training sets for model training
+  # @param nrun [Integer] will build different trainset for each run
   # @return [Dataset]
   # @raise [NoDataLeft] when there's not enough data left for a full train+test
+  # @note train or test have no meaning alone, and train always comes first.
+  #     Hence, `#train` checks if enough `data` is available for both `train`+`test`.
   def train nrun
     first = min_eligible_trg + (nrun-1) * test_size
     last = first + train_size
-    # make sure there's enough data for both train and test
-    raise NoDataLeft unless last + test_size < nrows
+    raise NoDataLeft unless last + test_size < nrows  # make sure there's enough data
     DataModeler::Dataset.new data, ds_args.merge(first_idx: first, end_idx: last)
   end
 
-  # Builds test set for the training
-  # @param nrun [Integer] will build different train+test for each run
+  # Builds test sets for model testing
+  # @param nrun [Integer] will build different testset for each run
   # @return [Dataset]
-  # @note we already checked pre-training there's enough data for the test too
+  # @note train or test have no meaning alone, and train always comes first.
+  #     Hence, `#train` checks if enough `data` is available for both `train`+`test`.
   def test nrun
     first = min_eligible_trg + (nrun-1) * test_size + train_size
     last = first + test_size
@@ -62,13 +69,13 @@ class DataModeler::DatasetGen
 
   # TODO: @local_nrun is an ugly name, refactor it!
 
-  # Returns the next pair [trainset, testset]
+  # Returns the next pair `[trainset, testset]`
   # @return [Array<Dataset, Dataset>]
   def peek
     [self.train(@local_nrun), self.test(@local_nrun)]
   end
 
-  # Returns the next pair [trainset, testset] and increments the counter
+  # Returns the next pair `[trainset, testset]` and increments the counter
   # @return [Array<Dataset, Dataset>]
   def next
     peek.tap { @local_nrun += 1 }
@@ -106,7 +113,7 @@ class DataModeler::DatasetGen
   def min_eligible_trg
     @min_eligible_trg ||= idx( time(0) +
       # minimum time span required as input for the first target
-      ds_args[:look_ahead] + (ds_args[:ntimes]-1) * ds_args[:tspread]
+      ds_args[:look_ahead] + (ds_args[:ninput_points]-1) * ds_args[:tspread]
     )
   end
 

@@ -1,16 +1,17 @@
 require 'ruby-fann'
 
-# Model class based on Fast Artificial Neural Networks (FANN)
+# Model the data using an artificial neural network, based on the
+# Fast Artificial Neural Networks (FANN) implementation
 class DataModeler::Models::FANN
 
   attr_reader :fann_opts, :ngens, :fann, :algo, :actfn
 
-  # @param ngens [Integer] number of generations alloted for training
+  # @param ngens [Integer] number of generations (repetitions) alloted for training
   # @param hidden_layers [Array<Integer>] list of number of hidden neurons
   #      per each hidden layer in the network
-  # @param ninputs [Integer] number of inputs of the network
-  # @param noutputs [Integer] number of outputs of the network
-  # @param algo [:incremental, :batch, :rprop, :quickprop] training algorithm
+  # @param ninputs [Integer] number of inputs in the network
+  # @param noutputs [Integer] number of outputs in the network
+  # @param algo [:rprop, :rwg, ...] training algorithm
   # @param actfn [:sigmoid, ...] activation function
   def initialize ngens:, hidden_layers:, ninputs:, noutputs:, algo: nil, actfn: nil
     @fann_opts = {
@@ -39,7 +40,7 @@ class DataModeler::Models::FANN
   end
 
   # Trains the model for ngens on the trainset
-  # @param trainset [Hash-like<input: Array, target: Array>] training set
+  # @param trainset [Hash<input: Array, target: Array>] training set
   # @param ngens [Integer] number of training generations
   # @return [void]
   def train trainset, ngens=@ngens, report_interval: 1000, desired_error: 1e-10
@@ -95,7 +96,7 @@ class DataModeler::Models::FANN
     inputs.collect { |i| fann.run i }
   end
 
-  # Save the model
+  # Saves the model
   # @param filename [String/path] where to save the model
   # @return [void]
   def save filename

@@ -17,7 +17,7 @@ CONFIG = {
     target_series: %w[s3],
     train_size: 10,
     test_size: 10,
-    ntimes: 2,
+    ninput_points: 2,
     tspread: 1,
     look_ahead: 1
   },

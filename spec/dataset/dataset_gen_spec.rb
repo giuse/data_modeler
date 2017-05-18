@@ -11,7 +11,7 @@ describe DatasetGen do
     context 'when building a simple static model' do
       let(:ds_args) do
         { inputs: [:s1], targets: [:s2],
-          ntimes: 1, tspread: 0, look_ahead: 0 }
+          ninput_points: 1, tspread: 0, look_ahead: 0 }
       end
       # |win|train|ts|    # spacing for run 1
       #        |train|ts| # spacing for run 2
@@ -94,10 +94,10 @@ describe DatasetGen do
       # end => idx trg(2) + 1 = 8
       let(:ds_args) do
         { inputs: [:s1,:s2], targets: [:s3,:s4],
-          ntimes: 2, tspread: 2, look_ahead: 1 }
+          ninput_points: 2, tspread: 2, look_ahead: 1 }
       end
       let(:sizes) { {train_size: 2, test_size: 3} }
-      # win: tspread*(ntimes-1) + l_a = 3, train_size 2, test_size 3
+      # win: tspread*(ninput_points-1) + l_a = 3, train_size 2, test_size 3
       # idx:   012345678
       # data:  |--------|
       # run1:  |ww|t|ts||

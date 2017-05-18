@@ -12,7 +12,7 @@
 # Shared examples for models
 # See `spec/model/fann_spec.rb` for my original example
 shared_examples DataModeler::Models do |ngens|
-  # context 'with correct initialization' do
+  context 'with correct initialization' do
     let(:data) do
       # XOR problem dataset
       [ [[0,0],[1]],
@@ -41,5 +41,5 @@ shared_examples DataModeler::Models do |ngens|
       avg_res = residuals.reduce(:+) / predictions.size
       expect(avg_res).to be < 0.3
     end
-  # end
+  end
 end

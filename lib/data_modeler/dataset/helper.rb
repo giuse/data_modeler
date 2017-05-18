@@ -3,7 +3,7 @@ class DataModeler::Dataset
   module ConvertingTimeAndIndices
     # Returns the time for a given index
     # @param [Integer] idx row index
-    # @return [kind_of_time]
+    # @return [type of `data[:time]`]
     def time idx
       data[:time][idx]
     end
@@ -25,10 +25,10 @@ class DataModeler::Dataset
     end
   end
 
-  # Provides each (which can return an `Iterator`) and `to_a` based on `#next`
+  # Provides `#each` (which can return an `Iterator`) and `#to_a` based on `#next`
   module IteratingBasedOnNext
     # Yields on each [inputs, targets] pair.
-    # @return [nil, Iterator] `block_given? ? nil : Iterator`
+    # @return [nil|Iterator] `block_given? ? nil : Iterator`
     def each
       reset_iteration
       return enum_for(:each) unless block_given?
@@ -36,8 +36,8 @@ class DataModeler::Dataset
       nil
     end
 
-    # Yields on each [inputs, targets] pair, collecting the input.
-    # @return [Array, Iterator] `block_given? ? nil : Iterator`
+    # Yields on each `[inputs, targets]` pair, collecting the input.
+    # @return [Array|Iterator] `block_given? ? nil : Iterator`
     def map
       reset_iteration
       return enum_for(:collect) unless block_given?

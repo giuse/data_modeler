@@ -11,7 +11,7 @@ describe Dataset do
     context 'when building a simple static model' do
       let(:args) do
         { inputs: [:s1], targets: [:s2], first_idx: 2, end_idx: 4,
-          ntimes: 1, tspread: 0, look_ahead: 0 }
+          ninput_points: 1, tspread: 0, look_ahead: 0 }
       end
       # NOTE: Datasets indices use with left inclusion and right exclusions,
       #       i.e. targets are considered in the range `[first_idx,end_idx)`
@@ -57,7 +57,7 @@ describe Dataset do
       # end => idx trg(2) + 1 = 8
       let(:args) do
         { inputs: [:s1,:s2], targets: [:s3,:s4], first_idx: 6, end_idx: 8,
-          ntimes: 2, tspread: 2, look_ahead: 1 }
+          ninput_points: 2, tspread: 2, look_ahead: 1 }
       end
       let(:right) do
         [ # list of 2 entries, for trg(1) idx=6 and trg(2) idx=7
