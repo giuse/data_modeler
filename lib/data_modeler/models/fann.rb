@@ -54,7 +54,7 @@ class DataModeler::Models::FANN
         report_interval: report_interval, desired_error: desired_error)
     end
     # TODO: optimize maybe?
-    inputs, targets = trainset.values
+    times, inputs, targets = trainset.values
     tset = RubyFann::TrainData.new inputs: inputs, desired_outputs: targets
     # fann.init_weights tset # test this weights initialization
 
@@ -73,7 +73,7 @@ class DataModeler::Models::FANN
     # check to improve performance
     fann.randomize_weights(*init_weights_range.map(&method(:Float)))
     # test it on inputs
-    inputs, targets = trainset.values
+    times, inputs, targets = trainset.values
     outputs = test(inputs)
     # calculate RMSE
     rmse_fn = -> (outs) do
@@ -99,7 +99,7 @@ class DataModeler::Models::FANN
   # @param inputs [Array<Array<inputs>>] sequence of inputs for the model
   # @return [Array<Array<outputs>>] outputs corresponding to each input
   def test inputs
-    inputs.collect { |i| fann.run i }
+    inputs.collect &fann.method(:run)
   end
 
   # Saves the model

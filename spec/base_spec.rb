@@ -20,7 +20,7 @@ describe DataModeler::Base do
       headers, *data = CSV.read(f, converters: :float)
       data
     end
-    residuals = results.collect { |(pr, ob)| (pr-ob).abs }
+    residuals = results.collect { |(t, pr, ob)| (pr-ob).abs }
     avg_res = residuals.reduce(:+) / residuals.size
     expect(avg_res).to be < 0.3
   end

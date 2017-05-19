@@ -35,13 +35,13 @@ describe YOUR_MODEL do
   context 'faced with a nonlinear problem' do
     # XOR problem dataset
     let(:data) do
-      [ [[0,0],[1]],
-        [[0,1],[0]],
-        [[1,0],[0]],
-        [[1,1],[1]] ]
+      [ [1,[0,0],[1]],
+        [2,[0,1],[0]],
+        [3,[1,0],[0]],
+        [4,[1,1],[1]] ]
     end
     # one for both train&test (no need for precision here)
-    let(:tset) { [:input, :target].zip(data.transpose).to_h }
+    let(:tset) { [:time, :input, :target].zip(data.transpose).to_h }
 
     # just make sure it's working, no need for precision here
     it 'consistently models XOR', retry: 5 do

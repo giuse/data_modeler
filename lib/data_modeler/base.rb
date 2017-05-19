@@ -42,9 +42,9 @@ class DataModeler::Base
       end
       model.reset
       model.train train_set, report_interval: report_interval
-      test_input, observations = tset_gen.test(nrun).values
+      times, test_input, observations = tset_gen.test(nrun).values
       predictions = model.test test_input
-      save_run nrun, model, [predictions, observations]
+      save_run nrun, model, [times, predictions, observations]
     end
   end
 
@@ -121,12 +121,12 @@ class DataModeler::Base
   # @param predobs [Array<Array<pred, obs>>] list of prediction-observation pairs
   # @return [void]
   # @note side effect: saves model and predobs to file system
-  def save_run nrun, model, predobs
+  def save_run nrun, model, tpredobs
     run_id = format '%02d', nrun
     model.save out_dir.join("model_#{run_id}.sav") if save_models?
-    CSV.open(out_dir.join("predobs_#{run_id}.csv"), 'wb') do |csv|
-      csv << targets.collect { |t| ["p_#{t}", "o_#{t}"] }.transpose.flatten
-      predobs.transpose.each { |po| csv << po.flatten }
+    CSV.open(out_dir.join("tpredobs_#{run_id}.csv"), 'wb') do |csv|
+      csv << (%w(time) + targets.collect { |t| ["p_#{t}", "o_#{t}"] }.transpose.flatten)
+      tpredobs.transpose.each { |tpo| csv << tpo.flatten }
     end
   end
 end

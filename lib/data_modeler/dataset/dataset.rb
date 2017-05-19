@@ -38,8 +38,6 @@ class DataModeler::Dataset
   end
 
   # TODO: make sure constructor requirements are unnecessary for static models
-  # TODO: check if enough data / minimum_target
-  # TODO: the check in `#init_target` should go in the `ds_gen`
 
   # Builds inputs for the model
   # @return [Array]
@@ -59,6 +57,12 @@ class DataModeler::Dataset
     end
   end
 
+  # Returns the time of the current target
+  # @return [type of `data[:time]`]
+  def trg_time
+    data[:time][target_idx]
+  end
+
   ### ITERATION
 
   # Returns the next pair [inputs, targets]
@@ -66,7 +70,7 @@ class DataModeler::Dataset
   # @raise [StopIteration] when the target index is past the dataset limits
   def peek
     raise StopIteration if target_idx >= end_idx
-    [inputs, targets]
+    [trg_time, inputs, targets]
   end
 
   # Returns the next pair [inputs, targets] and increments the target

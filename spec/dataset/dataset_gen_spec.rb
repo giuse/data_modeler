@@ -56,7 +56,8 @@ describe DatasetGen do
           [ # list of pairs of datasets (train, test), one per run
             [ # first run: two datasets (train, test), each `#to_a`
               [ # train set for first run: list of 2 entries, for trg = 0, 1
-                [ # first entry for trg=0: list of 2 entries, inputs and targets
+                [ # first entry for trg=0: list of 3 entries: time, inputs, targets
+                  1, # time for trg=0
                   [ # input from s1 idx0
                     10
                   ],
@@ -64,20 +65,20 @@ describe DatasetGen do
                     20
                   ]
                 ],
-                [[11],[21]] # second entry for trg=1
+                [2,[11],[21]] # second entry for trg=1
               ],
               [ # test set for first run: list of 3 entries, for trg = 2, 3, 4
-                [[12],[22]],
-                [[13],[23]],
-                [[14],[24]]
+                [3,[12],[22]],
+                [4,[13],[23]],
+                [5,[14],[24]]
               ]
             ],
             [ # second run, train idx in [3,4], test idx in[5,6,7]
-              [ [[13],[23]],
-                [[14],[24]] ],
-              [ [[15],[25]],
-                [[16],[26]],
-                [[17],[27]] ]
+              [ [4,[13],[23]],
+                [5,[14],[24]] ],
+              [ [6,[15],[25]],
+                [7,[16],[26]],
+                [8,[17],[27]] ]
             ]
           ]
         end
@@ -106,7 +107,8 @@ describe DatasetGen do
         [ # data for only one run: this runs list has only one element
           [ # first run: two datasets (train, test), each `#to_a`
             [ # train set for first run: list of 2 entries, for trg = 3, 4
-              [ # first entry for trg=3: list of 2 entries, inputs and targets
+              [ # first entry for trg=3: list of 3 entries: time, inputs, targets
+                4, # time for trg=3
                 [ # inputs from s1 idx0, s2 idx0, s1 idx2, s2 idx2
                   10, 20, 12, 22
                 ],
@@ -114,12 +116,12 @@ describe DatasetGen do
                   33, 43
                 ]
               ],
-              [[11,21,13,23],[34,44]] # second entry for trg=4
+              [5,[11,21,13,23],[34,44]] # second entry for trg=4
             ],
             [ # test set for first run: list of 3 entries, for trg = 5, 6, 7
-              [[12,22,14,24],[35,45]],
-              [[13,23,15,25],[36,46]],
-              [[14,24,16,26],[37,47]]
+              [6,[12,22,14,24],[35,45]],
+              [7,[13,23,15,25],[36,46]],
+              [8,[14,24,16,26],[37,47]]
             ]
           ]
         ]

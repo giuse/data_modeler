@@ -33,14 +33,14 @@ describe Dataset do
           expect { 3.times { ds.next } }.to raise_error(StopIteration)
         end
         it 'returns sequential data' do
-          expect(ds.next).to eq [[12],[22]]
-          expect(ds.next).to eq [[13],[23]]
+          expect(ds.next).to eq [3,[12],[22]]
+          expect(ds.next).to eq [4,[13],[23]]
         end
       end
 
       describe '#to_a' do
-        let(:right) { [[[12],[22]],[[13],[23]]] }
-        let(:wrong) { [[[12],[22]],[[13],[23]],[[14],[24]]] }
+        let(:right) { [[3,[12],[22]],[4,[13],[23]]] }
+        let(:wrong) { [[3,[12],[22]],[4,[13],[23]],[5,[14],[24]]] }
         subject { ds.to_a }
         it 'stops at end_idx' do
           is_expected.not_to eq wrong
@@ -62,6 +62,7 @@ describe Dataset do
       let(:right) do
         [ # list of 2 entries, for trg(1) idx=6 and trg(2) idx=7
           [ # first entry for trg(1) idx = 6
+            7,
             [ # inputs from s1 idx3, s2 idx3, s1 idx5, s2 idx5,
               13, 23, 15, 25
             ],
@@ -69,7 +70,7 @@ describe Dataset do
               36, 46
             ]
           ],
-          [[14, 24, 16, 26],[37, 47]] # second entry for trg(2) idx = 7
+          [8,[14, 24, 16, 26],[37, 47]] # second entry for trg(2) idx = 7
         ]
       end
       subject(:ds) { described_class.new data, **args }

@@ -9,19 +9,19 @@ shared_examples DataModeler::Models do |ngens|
   context 'with correct initialization' do
     # linearly correlated real data
     let(:data) do
-      [ [[1.0,0.905],[0.951]],
-        [[0.974,0.943],[0.952]],
-        [[0.937,0.971],[0.968]],
-        [[0.927,0.958],[0.985]],
-        [[0.944,0.915],[1.0]],
-        [[0.932,0.919],[0.996]],
-        [[0.927,0.938],[0.937]],
-        [[0.944,0.957],[0.967]],
-        [[0.965,0.98],[0.966]]
+      [ [1,[1.0,0.905],[0.951]],
+        [2,[0.974,0.943],[0.952]],
+        [3,[0.937,0.971],[0.968]],
+        [4,[0.927,0.958],[0.985]],
+        [5,[0.944,0.915],[1.0]],
+        [6,[0.932,0.919],[0.996]],
+        [7,[0.927,0.938],[0.937]],
+        [8,[0.944,0.957],[0.967]],
+        [9,[0.965,0.98],[0.966]]
       ]
     end
     # one for both train&test (not testing model generalization here)
-    let(:tset) { [:input, :target].zip(data.transpose).to_h }
+    let(:tset) { [:time, :input, :target].zip(data.transpose).to_h }
 
     it 'presents the correct interface' do
       is_expected.to respond_to(:reset).with(0).arguments
