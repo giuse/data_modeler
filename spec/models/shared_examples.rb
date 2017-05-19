@@ -2,7 +2,7 @@
 
 ### VERY IMPORTANT: your `Model` needs to be initialized with 2 inputs and 1 output
 
-# See an example usage (to copy!) in `spec/fann_spec.rb`
+# See an example usage (ready to copy) in `spec/fann_spec.rb`
 
 # Shared examples for models
 shared_examples DataModeler::Models do |ngens|
@@ -34,6 +34,33 @@ shared_examples DataModeler::Models do |ngens|
 
     # just make sure it's working, no need for precision here
     it 'consistently models the data', retry: 5 do
+      model.train tset, report_interval: 0
+      predictions = model.test tset[:input]
+      observations = tset[:target]
+      residuals = predictions.zip(observations).map { |(pr),(ob)| (pr-ob).abs }
+      avg_res = residuals.reduce(:+) / predictions.size
+      expect(avg_res).to be < 0.3
+    end
+  end
+end
+
+# This next shared example is used to test Models for the capability to solve
+# nonlinear problems with few data points
+
+shared_examples 'nonlinear solver' do
+  context 'with few data points' do
+    # XOR problem dataset
+    let(:data) do
+      [ [1,[0,0],[1]],
+        [2,[0,1],[0]],
+        [3,[1,0],[0]],
+        [4,[1,1],[1]] ]
+    end
+    # one for both train&test (no need for precision here)
+    let(:tset) { [:time, :input, :target].zip(data.transpose).to_h }
+
+    # just make sure it's working, no need for precision here
+    it 'consistently models XOR', retry: 5 do
       model.train tset, report_interval: 0
       predictions = model.test tset[:input]
       observations = tset[:target]

@@ -30,30 +30,11 @@ describe YOUR_MODEL do
 ##########################
 
 
-# now you can continue unit-testing your model
+  # Now you can continue unit-testing your model
+  # For example with the shared examples for nonlinear solving capability
+  it_behaves_like "nonlinear solver"
 
-  context 'faced with a nonlinear problem' do
-    # XOR problem dataset
-    let(:data) do
-      [ [1,[0,0],[1]],
-        [2,[0,1],[0]],
-        [3,[1,0],[0]],
-        [4,[1,1],[1]] ]
-    end
-    # one for both train&test (no need for precision here)
-    let(:tset) { [:time, :input, :target].zip(data.transpose).to_h }
-
-    # just make sure it's working, no need for precision here
-    it 'consistently models XOR', retry: 5 do
-      model.train tset, report_interval: 0
-      predictions = model.test tset[:input]
-      observations = tset[:target]
-      residuals = predictions.zip(observations).map { |(pr),(ob)| (pr-ob).abs }
-      avg_res = residuals.reduce(:+) / predictions.size
-      expect(avg_res).to be < 0.3
-    end
-  end
-
+  # Or testing specific features
   describe '#train' do
     context 'with `:rwg` as algorithm' do
       let(:rwg_opts) { opts.merge({algo: :rwg, init_weights_range:[-5,5]}) }
@@ -61,4 +42,5 @@ describe YOUR_MODEL do
       it_behaves_like DataModeler::Models # re-use the test
     end
   end
+
 end
