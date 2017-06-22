@@ -48,6 +48,8 @@ class DataModeler::Models::FANN
   # @param ngens [Integer] number of training generations
   # @return [void]
   def train trainset, ngens=@ngens, report_interval: 1000, desired_error: 1e-10
+    # it makes sense to temporarily disable the `report_interval` with `false` or `nil`
+    report_interval ||= 0
     # special case: not implemented in FANN
     if algo == :rwg
       return train_rwg(trainset, ngens,

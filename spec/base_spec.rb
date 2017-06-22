@@ -12,7 +12,8 @@ describe DataModeler::Base do
   subject(:modeler) { described_class.new CONFIG }
 
   it '#run', retry: 5 do
-    modeler.run report_interval: 0
+    modeler.run report_interval: (CONFIG[:learner][:ngens]/2) # use this to verify per-run printout
+    # modeler.run report_interval: false
     output_files = Pathname.glob res_dir.join('*')
     expect(output_files.size).to eq 6 # 3 models, 3 predobs
     result_files = output_files.select { |f| f.to_s =~ /predobs_\d+.csv/ }

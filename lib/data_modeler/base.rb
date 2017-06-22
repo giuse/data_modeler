@@ -33,19 +33,27 @@ class DataModeler::Base
   # @return [void]
   # @note saves model, preds and obs to the file sistem at the end of each run
   def run report_interval: 1000
-    1.upto(nruns) do |nrun; predictions, observations| # block-local variables
+    printing = report_interval && report_interval > 0
+    over_nruns = nruns == Float::INFINITY ? "" : "/#{nruns}"
+    puts "\nStarting @ #{Time.now}\n#{self}" if printing
+    1.upto(nruns) do |nrun|
       begin
         train_set = tset_gen.train(nrun)
       rescue DataModeler::DatasetGen::NoDataLeft
-        # will check if there's enough data for both train&test
-        break
+        break # there's not enough data left for a train+test set pair
       end
+      puts "\nRun #{nrun}#{over_nruns} -- starting @ #{Time.now}" if printing
       model.reset
+      puts "-Training" if printing
       model.train train_set, report_interval: report_interval
+      puts "-Testing" if printing
       times, test_input, observations = tset_gen.test(nrun).values
       predictions = model.test test_input
+      puts "-Saving" if printing
       save_run nrun, model, [times, predictions, observations]
+      puts "Run #{nrun}#{over_nruns} -- ending @ #{Time.now}" if printing
     end
+    puts "\nDone! @ #{Time.now}" if printing
   end
 
   # Attribute reader for instance variable `@save_models`, ending in '?' since

@@ -31,5 +31,5 @@ CONFIG = {
 # Run only if called directly (allows importing)
 if __FILE__ == $0
   CONFIG[:learner][:ngens] = 5 if ARGV[0] == 'debug'  # quicker debug
-  DataModeler.new(CONFIG).run
+  DataModeler.new(CONFIG).run report_interval: 8000
 end
