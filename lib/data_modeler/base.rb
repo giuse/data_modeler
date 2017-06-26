@@ -18,13 +18,13 @@ class DataModeler::Base
     @train_size = config[:tset][:train_size]
     @test_size = config[:tset][:test_size]
     @nruns = config[:tset][:nruns] ||= Float::INFINITY # terminates with data
-    @save_models = config[:results].delete :save_models
+    @save_models = config[:data].delete :save_models
 
-    @data = load_data config[:data]
-    @out_dir = prepare_output config[:results]
+    @data = load_data config[:data].delete :input_file
+    @out_dir = prepare_output config[:data]
 
     @tset_gen = DataModeler::DatasetGen.new data, **opts_for(:datasetgen)
-    @model = DataModeler::Models.selector **opts_for(:learner)
+    @model = DataModeler::Model.selector **opts_for(:learner)
   end
 
   # Main control: up to `nruns` (or until end of data) loop train-test-save
@@ -72,11 +72,10 @@ class DataModeler::Base
   private
 
   # Loads the data in a Hash ready for `DatasetGen` (and `Dataset`)
-  # @param dir [String/path] directory where to find the data (from `config`)
-  # @param file [String/fname] name of the file containing the data (from `config`)
+  # @param file [String/fname] path to the file containing the data (from `config`)
   # @return [Hash] the data ready for access
-  def load_data dir:, file:
-    filename = Pathname.new(dir).join(file)
+  def load_data filename
+    filename = Pathname.new filename
     abort "Only CSV data for now, sorry" unless filename.extname == '.csv'
     # avoid loading data we won't use
     series = [:time] + inputs + targets
@@ -93,15 +92,15 @@ class DataModeler::Base
   # @param id [String/fname] id of current config/experiment (from `config`)
   # @return [void]
   # @note side effect: creates directories on file system to hold output
-  def prepare_output dir:, id:
-    Pathname.new(dir).join(id).tap { |path| FileUtils.mkdir_p path }
+  def prepare_output results_dir:, exp_id:
+    Pathname.new(results_dir).join(exp_id).tap { |path| FileUtils.mkdir_p path }
   end
 
   # Compatibility helper, preparing configuration hashes for different classes
-  # @param who [Symbol] which class are you preparing the config for
+  # @param whom [Symbol] which class are you preparing the config for
   # @return [Hash] configuration for the class as required
-  def opts_for who
-    case who
+  def opts_for whom
+    case whom
     when :datasetgen
       { ds_args: opts_for(:dataset),
         train_size: config[:tset][:train_size],
@@ -119,7 +118,7 @@ class DataModeler::Base
         ninputs: (config[:tset][:ninput_points] * inputs.size),
         noutputs: targets.size
       })
-    else abort "Unrecognized `who`: '#{who}'"
+    else abort "Unrecognized `whom`: '#{whom}'"
     end
   end
 

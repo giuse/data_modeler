@@ -4,13 +4,10 @@ require 'data_modeler'
 
 CONFIG = {
   data: {
-    dir: 'spec/example',
-    file: 'demo_ts.csv'
-  },
-  results: {
-    save_models: true,
-    dir: 'spec/example/tmp',
-    id: DataModeler.id_from_filename(__FILE__)
+    input_file: 'spec/example/demo_ts.csv',
+    results_dir: 'spec/example/tmp',
+    exp_id: DataModeler.id_from_filename(__FILE__),
+    save_models: true
   },
   tset: {
     input_series: %w[s1 s2],
@@ -31,5 +28,5 @@ CONFIG = {
 # Run only if called directly (allows importing)
 if __FILE__ == $0
   CONFIG[:learner][:ngens] = 5 if ARGV[0] == 'debug'  # quicker debug
-  DataModeler.new(CONFIG).run report_interval: 8000
+  DataModeler.new(CONFIG).run report_interval: false #8000
 end
