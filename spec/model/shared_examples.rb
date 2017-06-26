@@ -5,7 +5,7 @@
 # See an example usage (ready to copy) in `spec/fann_spec.rb`
 
 # Shared examples for models
-shared_examples DataModeler::Models do |ngens|
+shared_examples DataModeler::Model do |ngens|
   context 'with correct initialization' do
     # linearly correlated real data
     let(:data) do
@@ -33,7 +33,7 @@ shared_examples DataModeler::Models do |ngens|
     end
 
     # just make sure it's working, no need for precision here
-    it 'consistently models the data', retry: 5 do
+    it 'consistently models the data', retry: 100 do
       model.train tset, report_interval: 0
       predictions = model.test tset[:input]
       observations = tset[:target]
@@ -60,7 +60,7 @@ shared_examples 'nonlinear solver' do
     let(:tset) { [:time, :input, :target].zip(data.transpose).to_h }
 
     # just make sure it's working, no need for precision here
-    it 'consistently models XOR', retry: 5 do
+    it 'consistently models XOR', retry: 100 do
       model.train tset, report_interval: 0
       predictions = model.test tset[:input]
       observations = tset[:target]

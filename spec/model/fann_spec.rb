@@ -6,7 +6,7 @@
 
 # To verify your model works with the framework, copy the lines below and
 # adapt them to your model
-YOUR_MODEL = DataModeler::Models::FANN
+YOUR_MODEL = DataModeler::Model::FANN
 
 # Describe the Model class
 describe YOUR_MODEL do
@@ -22,8 +22,7 @@ describe YOUR_MODEL do
   end
   # put the model in the subject, then call `it_behaves_like` as follows:
   subject(:model) { described_class.new **opts }
-  # You get 5 tries to solve XOR in the number of generations you pass
-  it_behaves_like DataModeler::Models
+  it_behaves_like DataModeler::Model
 
 ##########################
 # MODEL TEST EXAMPLE end #
@@ -34,12 +33,12 @@ describe YOUR_MODEL do
   # For example with the shared examples for nonlinear solving capability
   it_behaves_like "nonlinear solver"
 
-  # Or testing specific features
+  # Or testing specific features: i.e., I added RWG training to FANN
   describe '#train' do
     context 'with `:rwg` as algorithm' do
       let(:rwg_opts) { opts.merge({algo: :rwg, init_weights_range:[-5,5]}) }
       subject(:model) { described_class.new **rwg_opts }
-      it_behaves_like DataModeler::Models # re-use the test
+      it_behaves_like DataModeler::Model # re-use the test
     end
   end
 

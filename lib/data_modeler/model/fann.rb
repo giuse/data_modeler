@@ -2,7 +2,7 @@ require 'ruby-fann'
 
 # Model the data using an artificial neural network, based on the
 # Fast Artificial Neural Networks (FANN) implementation
-class DataModeler::Models::FANN
+class DataModeler::Model::FANN
 
   attr_reader :fann_opts, :ngens, :fann, :algo, :actfn, :init_weights_range
 

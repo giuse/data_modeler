@@ -9,8 +9,8 @@ require "data_modeler/dataset/dataset"
 require "data_modeler/dataset/dataset_gen"
 
 # Models
-require "data_modeler/models/selector"
-require "data_modeler/models/fann"
+require "data_modeler/model/selector"
+require "data_modeler/model/fann"
 
 # Framework core
 require "data_modeler/base"

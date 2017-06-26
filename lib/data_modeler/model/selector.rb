@@ -1,7 +1,7 @@
 
 # All models for the framework should belong to this module.
 # Also includes a model selector for initialization from config.
-module DataModeler::Models
+module DataModeler::Model
   # Returns a new `Model` based on the `type` of choice initialized
   #     with `opts` parameters
   # @param type [Symbol] selects the type of `Model`
