@@ -2,11 +2,6 @@
 # Main gem module
 module DataModeler
 
-  ### VERSION
-
-  # Version number
-  VERSION = "0.3.4"
-
   ### HELPER FUNCTIONS
 
   # Returns a standardized String ID from a (sequentially named) file

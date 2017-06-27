@@ -1,6 +1,7 @@
 require 'pathname'
 require 'fileutils'
 
+require "data_modeler/version"
 require "data_modeler/support"
 
 # Dataset

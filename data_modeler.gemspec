@@ -1,7 +1,7 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'data_modeler/support'
+require 'data_modeler/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "data_modeler"
@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["giuseppe.cuccu@gmail.com"]
 
   spec.summary       = %q{Model your data with machine learning}
-  spec.description   = %q{Using machine learning, create generative models based on your data alone. Applications span from imputation to prediction. This build specifically leverages time series. Further work on data preparation will be released as a separate project.}
+  spec.description   = %Q{Using machine learning, create generative models based on your data alone. Applications span from imputation to prediction. This build specifically leverages time series. Further work on data preparation will be released as a separate project. NOTE: production-ready since version 1.0.0 .}
   spec.homepage      = "https://github.com/giuse/data_modeler"
   spec.license       = "MIT"
 
@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
     f.match(%r{^(test|spec|features)/})
   end
   spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.executables   = spec.files.grep(%r{^exe/}, &File.method(:basename))
   spec.require_paths = ["lib"]
 
   # Models
