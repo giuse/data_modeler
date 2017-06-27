@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Giuseppe Cuccu"]
   spec.email         = ["giuseppe.cuccu@gmail.com"]
 
-  spec.summary       = %q{Model your data with machine learning}
-  spec.description   = %Q{Using machine learning, create generative models based on your data alone. Applications span from imputation to prediction. This build specifically leverages time series. Further work on data preparation will be released as a separate project. NOTE: production-ready since version 1.0.0 .}
+  spec.summary       = %{Model your data with machine learning}
+  spec.description   = %{Using machine learning, create generative models based on your data alone. Applications span from prediction to imputation and compression. This build specifically leverages time series. NOTE: Since version 1.0.0 we're production-ready! :)}
   spec.homepage      = "https://github.com/giuse/data_modeler"
   spec.license       = "MIT"
 
@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
     f.match(%r{^(test|spec|features)/})
   end
   spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}, &File.method(:basename))
+  spec.executables   = spec.files.grep(/^exe\//, &File.method(:basename))
   spec.require_paths = ["lib"]
 
   # Models

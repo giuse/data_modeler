@@ -6,7 +6,7 @@ CONFIG = {
   data: {
     input_file: 'spec/example/demo_ts.csv',
     results_dir: 'spec/example/tmp',
-    exp_id: DataModeler.id_from_filename(__FILE__),
+    exp_id: DataModeler.id_from(__FILE__),
     save_models: true
   },
   tset: {

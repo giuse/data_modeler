@@ -7,7 +7,7 @@ module DataModeler
   # Returns a standardized String ID from a (sequentially named) file
   # @return [String]
   # @note convenient method to have available in the config
-  def self.id_from_filename filename=__FILE__
+  def self.id_from filename
     format "%02d", Integer(filename[/_(\d+).rb$/,1])
   end
 

@@ -38,7 +38,7 @@ Start by just running one of the configurations, then play around with the confi
 ### Understanding the results
 
 Running a config file will create a folder holding the results; the path can be customized in the config file.  
-Note that `DataModeler#id_from_filename` returns a numeric ID from the end of a string (e.g. file name), saving you from forgetting to update the output folder after creating a new config by copy.
+Note that `DataModeler#id_from` returns a numeric ID from the end of a string (e.g. file name), saving you from forgetting to update the output folder after creating a new config by copy.
 
 Inside the results folder you will find a result file (CSV) for each run. They follow the naming convention `tpredobs_<nrun>.csv` as to remind their internal structure:
 
