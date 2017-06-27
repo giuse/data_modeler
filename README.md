@@ -63,6 +63,30 @@ Its (usually) first key is `:type`: you will find a model of the same(ish) name 
 This means that to know all available options you should rely on a previous config file, plus to the documentation (or implementation) of the `initialize` function of the model of choice (should be small).
 
 
+### Leveraging time series data
+
+There are three settings under `:tset` in the config which may be cryptic: `ninput_points`, `tspread` and `look_ahead`. Names can change in the future as I found it hard to name these three, please open an issue if I forget to modify this (or if you have suggestions).
+
+If you don't work with time series, just set them to [1,0,0], use a line counter for `time`, and ignore the following. These three only make sense if the data is composed of aligned time series, with a numeric column `time` -- its unit will also be the unit for `tspread` and `look_ahead`. 
+
+- ninput_points: how many points in time to construct the model's input. For example, if the number is 3, then data coming from 3 data lines is considered.
+- tspread: time spread between the data lines considered in the point above. For example, if the number is 2, then the data lines considered will have (at least) 2 time (units) between each other.
+- look_ahead: span between the most recent input considered and the target to be learned. For example, if the number is 5, then the target will be constructed from a data line which is (at least) 5 time (units) later than the most recent input.
+
+Example configurations:
+
+- ninput_points = 1, tspread = 0, look_ahead = 0 -> build input from one line, no spreading, predict results in same line. This is the basic configuration allowing same-timestep prediction, e.g. for static modeling or simple data imputation.
+- ninput_points = 4, tspread = 7, look_ahead = 7 -> hypothesize the unit of the column `time` to be days: build input from 4 lines spanning 21 days at one-week intervals (+ current), then use it to learn to predict one week ahead. This allows to train a proper time-ahead predictor, which will estimate the target at a constant one-week ahead interval.
+- ninput_points = 30, tspread = 1, look_ahead = 1 -> hypothesize the unit of the column `time` to be seconds: train a real-time predictor estimating a behavior one-second ahead based on 1s-spaced data over the past 29 seconds + current.
+
+Important: from each line, only the data coming from the listed input time series is considered for input, while the target time series list is used to construct the output.
+
+Example inputs and targets, considering t0 the "current" time for a given iteration:
+
+- ninput_points = 1, tspread = 0, look_ahead = 0, input_series = [s1, s4], targets = [s3]: inputs -> [s1t0, s2t0], targets = [s3t0]
+- ninput_points = 4, tspread = 7, look_ahead = 7, input_series = [s1, s4], targets = [s3, s5]: inputs -> [s1t-21, s2t-21, s1t-14, s2t-14, s1t-7, s2t-7, s1t0, s2t0], targets = [s3t0, s5t0]
+
+
 ## Contributing
 
 
