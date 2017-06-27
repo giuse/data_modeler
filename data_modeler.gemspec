@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
 
   # Models
   # TODO: learn to keep them independent from the gem (plug-ins)
-  spec.add_dependency 'ruby-fann', '~>1.2.6'
+  spec.add_dependency 'ruby-fann', '~>1.2'
 
   # Debug
   spec.add_development_dependency 'pry', '~> 0.10'
