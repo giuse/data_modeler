@@ -2,10 +2,11 @@
 # [Data Modeler](https://github.com/giuse/data_modeler)
 
 
-[![Gem Version](https://badge.fury.io/rb/data_modeler.svg)](https://badge.fury.io/rb/data_modeler)
-[![Build Status](https://travis-ci.org/giuse/data_modeler.svg?branch=master)](https://travis-ci.org/giuse/data_modeler)
-[![Code Climate](https://codeclimate.com/github/giuse/data_modeler/badges/gpa.svg)](https://codeclimate.com/github/giuse/data_modeler)
-
+[![Build Status](https://img.shields.io/travis/giuse/data_modeler.svg)](https://travis-ci.org/giuse/data_modeler)
+[![Code Climate](https://img.shields.io/codeclimate/github/giuse/data_modeler.svg)](https://codeclimate.com/github/giuse/data_modeler)
+[![Gem Version](https://img.shields.io/gem/v/data_modeler.svg)](https://rubygems.org/gems/data_modeler)
+[![Total downloads](https://img.shields.io/gem/dt/data_modeler.svg)](https://rubygems.org/gems/data_modeler)
+[![License](https://img.shields.io/github/license/giuse/data_modeler.svg)](LICENSE.txt)
 
 **Using machine learning, create generative models based on your data.**
 
