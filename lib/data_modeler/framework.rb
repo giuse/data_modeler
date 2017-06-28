@@ -5,7 +5,7 @@ require 'csv'
 # - Initializes the system based on the config
 # - Runs over the data training and testing models
 # - Results and models are saved to the file system
-class DataModeler::Base
+class DataModeler::Framework
 
   attr_reader :config, :inputs, :targets, :train_size, :test_size,
               :nruns, :data, :out_dir, :tset_gen, :model

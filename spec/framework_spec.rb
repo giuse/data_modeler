@@ -1,5 +1,5 @@
 
-describe DataModeler::Base do
+describe DataModeler::Framework do
   before(:all) do
     # this config can be used as an example to create your own experiments
     load Pathname.new(__FILE__).dirname.join 'example', 'config_01.rb'

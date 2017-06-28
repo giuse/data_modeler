@@ -14,4 +14,4 @@ require "data_modeler/model/selector"
 require "data_modeler/model/fann"
 
 # Framework core
-require "data_modeler/base"
+require "data_modeler/framework"

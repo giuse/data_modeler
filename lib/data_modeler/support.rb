@@ -11,11 +11,11 @@ module DataModeler
     format "%02d", Integer(filename[/_(\d+).rb$/,1])
   end
 
-  # Returns an instance of the Base class
-  # @param config [Hash] Base class configuration
-  # @return [Base] initialized instance of Base class
+  # Returns an instance of the Framework class
+  # @param config [Hash] Framework class configuration
+  # @return [Framework] initialized instance of Framework class
   def self.new config
-    DataModeler::Base.new config
+    DataModeler::Framework.new config
   end
 
   ### EXCEPTIONS

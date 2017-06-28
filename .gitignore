@@ -8,6 +8,7 @@
 /spec/reports/
 /tmp/
 /data_modeler-*.gem
+todo
 
 # rspec failure tracking
 .rspec_status
