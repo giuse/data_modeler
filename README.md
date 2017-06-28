@@ -7,7 +7,8 @@
 [![Code Climate](https://codeclimate.com/github/giuse/data_modeler/badges/gpa.svg)](https://codeclimate.com/github/giuse/data_modeler)
 
 
-#### Using machine learning, create generative models based on your data alone. Applications span from prediction to imputation and compression.
+**Using machine learning, create generative models based on your data alone.
+Applications span from prediction to imputation and compression.**
 
 
 ## Installation
