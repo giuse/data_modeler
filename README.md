@@ -7,7 +7,7 @@
 [![Code Climate](https://codeclimate.com/github/giuse/data_modeler/badges/gpa.svg)](https://codeclimate.com/github/giuse/data_modeler)
 
 
-**Using machine learning, create generative models based on your data alone.
+**Using machine learning, create generative models based on your data alone.  
 Applications span from prediction to imputation and compression.**
 
 
@@ -74,7 +74,7 @@ If you don't work with time series, just set them to [1,0,0], use a line counter
 - tspread: time spread between the data lines considered in the point above. For example, if the number is 2, then the data lines considered will have (at least) 2 time (units) between each other.
 - look_ahead: span between the most recent input considered and the target to be learned. For example, if the number is 5, then the target will be constructed from a data line which is (at least) 5 time (units) later than the most recent input.
 
-Example configurations:
+*Example configurations:*
 
 - ninput_points = 1, tspread = 0, look_ahead = 0 -> build input from one line, no spreading, predict results in same line. This is the basic configuration allowing same-timestep prediction, e.g. for static modeling or simple data imputation.
 - ninput_points = 4, tspread = 7, look_ahead = 7 -> hypothesize the unit of the column `time` to be days: build input from 4 lines spanning 21 days at one-week intervals (+ current), then use it to learn to predict one week ahead. This allows to train a proper time-ahead predictor, which will estimate the target at a constant one-week ahead interval.
@@ -82,10 +82,10 @@ Example configurations:
 
 Important: from each line, only the data coming from the listed input time series is considered for input, while the target time series list is used to construct the output.
 
-Example inputs and targets, considering t0 the "current" time for a given iteration:
+*Example inputs and targets*, considering `t0` the "current" time for a given iteration:
 
 - ninput_points = 1, tspread = 0, look_ahead = 0, input_series = [s1, s4], targets = [s3]: inputs -> [s1t0, s2t0], targets = [s3t0]
-- ninput_points = 4, tspread = 7, look_ahead = 7, input_series = [s1, s4], targets = [s3, s5]: inputs -> [s1t-21, s2t-21, s1t-14, s2t-14, s1t-7, s2t-7, s1t0, s2t0], targets = [s3t0, s5t0]
+- ninput_points = 4, tspread = 7, look_ahead = 7, input_series = [s1, s4], targets = [s3, s5]: inputs -> [s1t-21, s2t-21, s1t-14, s2t-14, s1t-7, s2t-7, s1t0, s2t0], targets = [s3t7, s5t7]
 
 
 ## Contributing
