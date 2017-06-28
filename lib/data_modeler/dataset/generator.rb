@@ -14,7 +14,7 @@
 # Note how the test sets line up. This allows the testing results plots
 # to be continuous, while no model is tested on data on which _itself_ has been trained.
 # All data is used multiple times, alternately both as train and test sets.
-class DataModeler::DatasetGen
+class DataModeler::Dataset::Generator
 
   attr_reader :data, :ds_args, :first_idx, :train_size, :test_size, :nrows
 

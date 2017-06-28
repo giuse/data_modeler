@@ -23,7 +23,7 @@ class DataModeler::Framework
     @data = load_data config[:data].delete :input_file
     @out_dir = prepare_output config[:data]
 
-    @tset_gen = DataModeler::DatasetGen.new data, **opts_for(:datasetgen)
+    @tset_gen = DataModeler::Dataset::Generator.new data, **opts_for(:dataset_gen)
     @model = DataModeler::Model.selector **opts_for(:learner)
   end
 
@@ -39,7 +39,7 @@ class DataModeler::Framework
     1.upto(nruns) do |nrun|
       begin
         train_set = tset_gen.train(nrun)
-      rescue DataModeler::DatasetGen::NoDataLeft
+      rescue DataModeler::Dataset::Generator::NoDataLeft
         break # there's not enough data left for a train+test set pair
       end
       puts "\nRun #{nrun}#{over_nruns} -- starting @ #{Time.now}" if printing
@@ -101,7 +101,7 @@ class DataModeler::Framework
   # @return [Hash] configuration for the class as required
   def opts_for whom
     case whom
-    when :datasetgen
+    when :dataset_gen
       { ds_args: opts_for(:dataset),
         train_size: config[:tset][:train_size],
         test_size: config[:tset][:test_size]

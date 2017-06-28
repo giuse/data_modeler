@@ -1,6 +1,6 @@
 
 # Build complex inputs and targets from the data to train the model.
-class DataModeler::Dataset
+class DataModeler::Dataset::Accessor
 
   attr_reader :data, :input_series, :target_series, :first_idx, :end_idx,
               :ninput_points, :tspread, :look_ahead, :first_idx, :target_idx,

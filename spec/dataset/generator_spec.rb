@@ -1,7 +1,7 @@
 
 include DataModeler
 
-describe DatasetGen do
+describe Dataset::Generator do
   context 'when initialized with a timeseries hash' do
     # Definition in `spec_helper.rb`
     # { time: [1,2,..,9], s1: [10,11,..,18], .., s4: [40,41,..,48] }

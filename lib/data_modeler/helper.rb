@@ -25,7 +25,7 @@ module DataModeler
     class TimeNotFoundError < StandardError; end
   end
 
-  class DataModeler::DatasetGen
+  class DataModeler::Dataset::Generator
     # Exception: not enough `data` was provided for even a single train+test setup
     class NotEnoughDataError < StandardError; end
 

@@ -1,4 +1,14 @@
 class DataModeler::Dataset
+
+  # Returns an instance of the DataModeler::Dataset::Accessor class
+  # @param args [Hash] Accessor class parameters
+  # @return [Accessor] initialized instance of Accessor class
+  def self.new *args
+    Accessor.new *args
+  end
+
+  ### HELPER MODULES
+
   # Converts between time and indices for referencing data lines
   module ConvertingTimeAndIndices
     # Returns the time for a given index
@@ -51,6 +61,5 @@ class DataModeler::Dataset
     def to_a
       each.to_a
     end
-
   end
 end
